@@ -1,0 +1,375 @@
+input[type="file"] {
+  display: none;
+}
+
+.file_upload {
+  color: black;
+  border-radius: 100px;
+  border: 2px solid #1a1a1a;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  width: 500px;
+}
+
+.uploadImage{
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+
+.file_upload:hover{
+  background-color: #1a1a1a;
+  color: white;
+}
+
+.photos{
+  border: solid #1a1a1a 2px;
+  padding: 30px 0 30px 0;
+  background-color: #747a7c;
+  border-radius: 5px;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  /* overflow: hidden; */
+}
+
+
+.friend_search{
+  margin-bottom: 10px;
+  margin-left: 40%;
+  text-align: center; 
+  background-color:#1a1a1a; 
+  color:white;
+  max-width:400px;
+  max-height: 30px;
+  border-radius: 100px;
+}
+
+.friends{
+  padding: 30px 0 50px 0;
+  background-color: #747a7c;
+  border: solid #1a1a1a 2px;
+  border-radius: 5px;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  /* overflow: hidden; */
+}
+
+.friend-card{
+  border: solid black 1px;
+  display: inline-block;
+  border-radius: 10px;
+  margin-right: 10px;
+  width: 200px;
+  max-height: 350px;
+  position: relative;
+  /* overflow: hidden */
+}
+
+.dropdown-toggle{
+  height: fit-content;
+  width: fit-content;
+  border-radius: 10px;
+}
+
+.card-img-top{
+  border-radius: 10px;
+}
+ 
+.card-title{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  margin-top: 5%;
+  box-sizing: border-box;
+  /* padding-bottom: 10px; */
+  font-size: .8rem;
+}
+
+.img-wrap {
+  border: solid #1a1a1a 2px;
+  position: relative;
+  display: inline-flex;
+  /* display: inline-block; */
+}
+
+.delete_icon{
+  padding-left: 5px;
+  color: rgba(243, 51, 51, 0.699);
+  margin-left: 95%;
+  cursor: pointer;
+}
+
+.delete_icon:hover{
+  color: red;
+  transform: scale(1.2);
+}
+.delete_icon:hover + .user_photo{
+  opacity: .5;
+}
+
+.photo_card{
+  padding-bottom: 2px;
+  padding-right: 2px;
+  padding-top: 2px;
+  padding-left: 2px;
+  margin: 5px;
+  border-radius: 10px;
+}
+
+.user_photo{
+  border-radius: 10px;
+  padding: 5px 5px 5px 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  width:600px;
+  height:500px;
+}
+
+.login-container{
+    width: 400px;
+    margin-top: 50px;
+    text-align: center;
+}
+
+p{
+    margin: 10px 0 !important;
+    font-size: xx-large;
+    color: whitesmoke;
+}   
+
+:root {
+  --input-padding-x: 1.5rem;
+  --input-padding-y: 0.75rem;
+}
+
+.login,
+.image {
+  min-height: 100vh;
+}
+/* https://source.unsplash.com/WEQbe2jBg40/600x1200 */
+.bg-image {
+  background-image: url('../assets/images/login-film-camera.png');
+  background-size: cover;
+  background-position: right;
+}
+
+.login-heading {
+  font-weight: 300;
+}
+
+.btn-login {
+  font-size: 0.9rem;
+  letter-spacing: 0.05rem;
+  padding: 0.75rem 1rem;
+  border-radius: 2rem;
+}
+
+.form-label-group {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.form-label-group>input,
+.form-label-group>label {
+  padding: var(--input-padding-y) var(--input-padding-x);
+  height: auto;
+  border-radius: 2rem;
+}
+
+.form-label-group>label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  margin-bottom: 0;
+  /* Override default `<label>` margin */
+  line-height: 1.5;
+  color: #495057;
+  cursor: text;
+  /* Match the input under the label */
+  border: 1px solid transparent;
+  border-radius: .25rem;
+  transition: all .1s ease-in-out;
+}
+
+.form-label-group input::-webkit-input-placeholder {
+  color: transparent;
+}
+
+.form-label-group input:-ms-input-placeholder {
+  color: transparent;
+}
+
+.form-label-group input::-ms-input-placeholder {
+  color: transparent;
+}
+
+.form-label-group input::-moz-placeholder {
+  color: transparent;
+}
+
+.form-label-group input::placeholder {
+  color: transparent;
+}
+
+.form-label-group input:not(:placeholder-shown) {
+  padding-top: calc(var(--input-padding-y) + var(--input-padding-y) * (2 / 3));
+  padding-bottom: calc(var(--input-padding-y) / 3);
+}
+
+.form-label-group input:not(:placeholder-shown)~label {
+  padding-top: calc(var(--input-padding-y) / 3);
+  padding-bottom: calc(var(--input-padding-y) / 3);
+  font-size: 12px;
+  color: #777;
+}
+
+/* Fallback for Edge
+-------------------------------------------------- */
+
+@supports (-ms-ime-align: auto) {
+  .form-label-group>label {
+    display: none;
+  }
+  .form-label-group input::-ms-input-placeholder {
+    color: #777;
+  }
+}
+
+/* Fallback for IE
+-------------------------------------------------- */
+
+@media all and (-ms-high-contrast: none),
+(-ms-high-contrast: active) {
+  .form-label-group>label {
+    display: none;
+  }
+  .form-label-group input:-ms-input-placeholder {
+    color: #777;
+  }
+}
+
+
+/* 
+Starting  Loader CSS
+*/
+/* body{
+  font-family: Arial, Sans;
+  margin: 0;
+}  */
+
+.wrapper{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  text-align:center;
+  transform: translateX(-50%);
+}
+
+.spanner{
+  position:absolute;
+  top: 50%;
+  left: 0;
+  background: #2a2a2a55;
+  width: 100%;
+  display:block;
+  text-align:center;
+  height: 300px;
+  color: #FFF;
+  transform: translateY(-50%);
+  z-index: 1000;
+  visibility: hidden;
+}
+
+.overlay{
+  position: fixed; /* Sit on top of the page content */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
+}
+
+.loader,
+.loader:before,
+.loader:after {
+  border-radius: 50%;
+  width: 2.5em;
+  height: 2.5em;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation: load7 1.8s infinite ease-in-out;
+  animation: load7 1.8s infinite ease-in-out;
+}
+.loader {
+  color: #ffffff;
+  font-size: 10px;
+  margin: 80px auto;
+  position: relative;
+  text-indent: -9999em;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+.loader:before,
+.loader:after {
+  content: '';
+  position: absolute;
+  top: 0;
+}
+.loader:before {
+  left: -3.5em;
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+.loader:after {
+  left: 3.5em;
+}
+@-webkit-keyframes load7 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 2.5em 0 -1.3em;
+  }
+  40% {
+    box-shadow: 0 2.5em 0 0;
+  }
+}
+@keyframes load7 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 2.5em 0 -1.3em;
+  }
+  40% {
+    box-shadow: 0 2.5em 0 0;
+  }
+}
+
+.show{
+  visibility: visible;
+}
+
+.spanner, .overlay{
+	opacity: 0;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+.spanner.show, .overlay.show {
+	opacity: 1
+}
+
+/* Ending Loader css */

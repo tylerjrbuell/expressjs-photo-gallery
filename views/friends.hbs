@@ -1,0 +1,25 @@
+<h1 style="padding-top: 10px; border-top: solid #1a1a1a 2px">{{username}}'s Friends</h1>
+<input class="form-control mr-sm-2 friend_search" type="text" name="friend_search" placeholder="Search Friends">
+<div class="friends">
+{{#if friends}}
+    {{#each friends}}
+        <div class="card friend-card" id="{{_id}}">
+        <img src="{{image}}" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title" title="{{display_name}}">{{display_name}}</h5>
+                <p class="card-text"></p>
+                <button class="btn btn-secondary dropdown-toggle" style="background-color: #1a1a1a; color:white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Actions
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="/gallery/{{_id}}">📷 Go to Gallery</a>
+                    <a class="dropdown-item remove_friend" username="{{display_name}}" user_id="{{_id}}" style="cursor: pointer;">❌ Remove Friend</a>
+                </div>
+            </div>
+        </div>
+    {{/each}}
+{{else}}
+        <p> No Gallery Friends to show 🙁</p>
+{{/if}}
+
+</div>

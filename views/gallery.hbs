@@ -1,0 +1,40 @@
+<h1 style="padding-top: 10px; border-top: solid #1a1a1a 2px"><span><img style="border-radius:50%; padding-right: 10px;" src="{{user_image}}" alt=""></span>{{username}}'s Photo Gallery {{search}}</h1>
+{{#ifIn 'upload' image_permissions }}
+<div class="uploadImage">
+    <form action="/gallery/upload" method="post" enctype="multipart/form-data" id="file_upload_form" >
+    <label for="photo_file" class="file_upload"><i class="fas fa-upload"></i> Upload Images</label>
+    <input type="file" name="photo_file" id="photo_file" multiple>
+    <label id="file_name"></label>
+    </form>
+</div>
+{{/ifIn}}
+<label for="zoomRange">Zoom Level: <span id="zoom_level">100</span>% </label>
+<div class="slidecontainer">
+  <input type="range" min="1" max="100" value="100" class="slider"  id="zoomRange">
+</div>
+
+<div class="photos">
+    {{#if user_photos}}
+        {{#each user_photos}}
+            <div class="card photo_card img-wrap" id="{{@key}}">
+                {{#ifIn 'delete' ../image_permissions }}
+                    <span class="delete_icon" title="Delete Image" path="{{path}}" photo_id="{{@key}}"><i class="fas fa-times fa-2x"></i></span>
+                {{/ifIn}}
+                <img class="card-img-top user_photo" src="{{../base_url}}{{path}}" alt="Card image cap">
+            </div>          
+        {{/each}}
+    {{else}}
+        <p></i> No photos to display 🤷</p>
+    {{/if}}
+    
+
+</div>
+
+
+
+
+
+
+
+
+
