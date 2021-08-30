@@ -115,8 +115,8 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, "public")));
 app.use('/uploads/photos',express.static(process.env.PHOTO_UPLOAD_DIR));
 
-app.listen(PORT, SERVER, () => {
-  console.log("Server started on: http://" + SERVER + ":" + PORT);
+app.listen(PORT, () => {
+  console.log("Server started on port" + PORT);
 });
 
 
