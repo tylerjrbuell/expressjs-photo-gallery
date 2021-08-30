@@ -18,9 +18,9 @@ let fs = require('fs')
 
 
 //Load Config
-dotenv.config({
-  path: "./config/.env"
-});
+// dotenv.config({
+//   path: "./config/.env"
+// });
 
 //load passport to auth
 const passport_config = require("./config/passport");
