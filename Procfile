@@ -1,3 +1,3 @@
 "scripts": {
-  "start": "npm run prod
+  "start": "npm run prod"
 }
