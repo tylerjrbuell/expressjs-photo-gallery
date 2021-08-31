@@ -116,7 +116,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use('/uploads/photos',express.static(process.env.PHOTO_UPLOAD_DIR));
 
 app.listen(PORT, () => {
-  console.log("Server started on port" + PORT);
+  console.log("Server started on port: " + PORT);
 });
 
 
