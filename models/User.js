@@ -32,6 +32,9 @@ const userSchema = new mongoose.Schema({
   },
   friends_list: {
     type: Array,
+  },
+  photo_likes: {
+    type: Array,
   }
 },{strict: false});
 

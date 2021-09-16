@@ -15,12 +15,24 @@
 
 <div class="photos">
     {{#if user_photos}}
-        {{#each user_photos}}
-            <div class="card photo_card img-wrap" id="{{@key}}">
+        {{#each user_photos}}            
+            <div class="card photo_card img-wrap" id="{{_id}}">
                 {{#ifIn 'delete' ../image_permissions }}
-                    <span class="delete_icon" title="Delete Image" path="{{path}}" photo_id="{{@key}}"><i class="fas fa-times fa-2x"></i></span>
+                    <span class="delete_icon" title="Delete Image" path="{{path}}" image_id="{{_id}}" ><i class="fas fa-times fa-2x"></i></span>
                 {{/ifIn}}
                 <img class="card-img-top user_photo" src="{{../base_url}}{{path}}" alt="Card image cap">
+                <div class="icon-container">
+                    {{#ifIn 'like' ../image_permissions }}
+                        <i class="fa fa-heart-o fa-2x" image_id="{{_id}}" title="Like" ></i>
+                        <i class="fa fa-heart fa-2x" image_id="{{_id}}" title="Un-Like"></i>
+                    {{/ifIn}}
+                    {{#ifIn 'share' ../image_permissions }}
+                        <i class="fas fa-share fa-2x" title="Share"></i>
+                    {{/ifIn}}
+                </div>
+                <div class="liked-by">
+                        <h4><span id="like_count_{{_id}}"></span> Likes</h4>
+                </div>
             </div>          
         {{/each}}
     {{else}}
@@ -30,8 +42,38 @@
 
 </div>
 
+<script>
+    var photos = {{{convert user_photos}}}
+    var user = {{{convert current_user}}}
+    var likes = {{{convert photo_likes}}}
+    for(photo of photos){
+        var like_count = document.getElementById(`like_count_${photo._id}`);
+        like_count.innerHTML = likes.filter(function(e){
+            return e.photo == photo._id
+        }).length
+        for(like of likes){
+            if(like.photo == photo._id && like.user == user._id ){
+                var like_icon = Array.from(document.getElementsByClassName('fa-heart')).find(function(e){
+                    return e.getAttribute('image_id') == photo._id
+                });
+                
+                like_icon.setAttribute('style','display:block !important');;
+                    var unlike_icon = Array.from(document.getElementsByClassName('fa-heart-o')).find(function(e){
+                    return e.getAttribute('image_id') == photo._id
+                });
+                unlike_icon.setAttribute('style','display:none !important');
+
+            }
+        }
+    }
+    
+</script>
 
 
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
 

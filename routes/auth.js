@@ -1,11 +1,11 @@
 express = require('express')
 passport = require('passport')
 router = express.Router()
-let User = require('../models/User')
+let user = require('../models/User')
 
 //@desc     Login/Landing page
 //@route    GET /auth/login
-router.get('/login', (req, res) => {
+router.get('/login',(req, res) => {
     if(req.query.returnTo){
         req.session.returnTo = req.query.returnTo;
     }    
@@ -77,4 +77,18 @@ router.post('/login', (req, res) => {
 
 })
 
-module.exports = router
+
+function ensureAuthenticated(req,res,next){
+    if(req.user){
+        return next();
+    }
+    if(req.originalUrl == '/'){
+        res.redirect('/auth/login')
+    }else{
+        res.redirect(`/auth/login?returnTo=${req.originalUrl}`);
+    }
+    
+}
+
+
+module.exports = {router, ensureAuthenticated}

@@ -6,6 +6,7 @@ let passport = require("passport");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
+const handlebars = require('handlebars')
 const exphbs = require("express-handlebars");
 const flash = require("connect-flash");
 const toastr = require("express-toastr");
@@ -13,8 +14,8 @@ const https = require('https')
 let fs = require('fs')
 
 // SSL cert
-// const key = fs.readFileSync("./security/test-app.10.204.221.131.nip.io-key.pem", "utf-8");
-// const cert = fs.readFileSync("./security/test-app.10.204.221.131.nip.io.pem", "utf-8");
+const key = fs.readFileSync("./security/test-app.10.204.221.131.nip.io-key.pem", "utf-8");
+const cert = fs.readFileSync("./security/test-app.10.204.221.131.nip.io.pem", "utf-8");
 
 
 //Load Config
@@ -27,7 +28,7 @@ const passport_config = require("./config/passport");
 passport_config(passport);
 
 //call connect_DB function from db.js
-connectDB = require("./config/db.js");
+const connectDB = require("./config/db.js");
 connectDB();
 
 const expressToastr = require("express-toastr");
@@ -92,6 +93,12 @@ var hbs = exphbs.create({
 app.engine(".hbs", exphbs({
   // Specify helpers which are only registered on this instance.
   helpers: {
+    convert: function (date) {
+      if (!date) {
+          return;
+      }
+      return JSON.stringify(date);
+    },
     setVar: function(varName, varValue, options) {
       options.data.root[varName] = varValue;
     },
@@ -103,7 +110,8 @@ app.engine(".hbs", exphbs({
     }
   },
   defaultLayout: "main",
-  extname: ".hbs"
+  extname: ".hbs",
+  // handlebars: allowInsecurePrototypeAccess(handlebars)
 }));
 app.set("view engine", ".hbs");
 
@@ -115,17 +123,17 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, "public")));
 app.use('/uploads/photos',express.static(process.env.PHOTO_UPLOAD_DIR));
 
-app.listen(PORT, () => {
-  console.log("Server started on port: " + PORT);
-});
+// app.listen(PORT, () => {
+//   console.log("Server started on port: " + PORT);
+// });
 
 
-// https.createServer({ key, cert }, app).listen(PORT,SERVER,() => {
-//     console.log("Server started on: https://" + SERVER + ":" + PORT);
-//   });
+https.createServer({ key, cert }, app).listen(PORT,SERVER,() => {
+    console.log("Server started on: https://" + SERVER + ":" + PORT);
+  });
 
 //auth Level Route
-app.use("/auth", require("./routes/auth"));
+app.use("/auth", require("./routes/auth").router);
 
 //Top Level Route
 app.use("/", require("./routes/index"));

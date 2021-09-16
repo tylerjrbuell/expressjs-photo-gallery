@@ -1,8 +1,10 @@
 express = require('express')
 let router = express.Router()
 const multipart = require('connect-multiparty');
-User = require('../models/User')
+const User = require('../models/User')
+const mongodb = require('mongodb');
 const userModel = require('../models/UserModel')
+let forceAuth = require('./auth').ensureAuthenticated
 fs = require('fs')
 
 //connect-multiparty will help to access uploaded files on the req.files object
@@ -10,20 +12,10 @@ const multipartMiddleware = multipart({ maxFieldsSize: (20 * 1024 * 1024), uploa
 router.use(multipartMiddleware);
 
 
-function ensureAuthenticated(req,res,next){
-    if(req.user){
-        return next();
-    }
-    if(req.originalUrl == '/'){
-        res.redirect('/auth/login')
-    }else{
-        res.redirect(`/auth/login?returnTo=${req.originalUrl}`);
-    }
-    
-}
 
 
-router.get('/',ensureAuthenticated,(req, res) => {
+
+router.get('/',forceAuth,(req, res) => {
     res.redirect('/gallery')  
 })
 
@@ -45,18 +37,22 @@ function renderGallery(req,res,data=undefined){
             image_permissions: ['delete','upload'],
             image: req.user.image,
             app_name: process.env.APP_NAME,
-            user_photos: req.user.user_photos.reverse()
+            user_photos: req.user.user_photos ? req.user.user_photos.reverse() : [],
+            photo_likes: req.user.photo_likes,
+            current_user: req.user
         }
     }else{
         render_data = {
             base_url: `https://${process.env.SERVER}/`,
             username: data.first_name,
             toast_msg: req.flash(),
-            image_permissions: [],
+            image_permissions: ['like','share'],
             user_image: data.image,
             image: req.user.image,
             app_name: process.env.APP_NAME,
-            user_photos: data.user_photos.reverse()
+            user_photos: data.user_photos ? data.user_photos.reverse() : [],
+            photo_likes: data.photo_likes,
+            current_user: req.user
         }
     }
 
@@ -65,7 +61,7 @@ function renderGallery(req,res,data=undefined){
 
 //@desc     Friends
 //@route    GET /friends
-router.get('/friends',ensureAuthenticated, async (req, res) => {
+router.get('/friends',forceAuth, async (req, res) => {
     let user_friends =  await User.find().where('_id').in(req.user.friends_list).lean().exec()
     res.render('friends',{
         base_url: `https://${process.env.SERVER}/`,
@@ -80,7 +76,7 @@ router.get('/friends',ensureAuthenticated, async (req, res) => {
 
 //@desc     Gallery
 //@route    GET /gallery
-router.get('/gallery/:user_id?',ensureAuthenticated, async (req, res) => {
+router.get('/gallery/:user_id?',forceAuth, async (req, res) => {
     if(!req.params.user_id){
             if(!req.session.greeted){
                 req.flash('msg',`Welcome ${req.user.display_name}!`);
@@ -99,7 +95,7 @@ router.get('/gallery/:user_id?',ensureAuthenticated, async (req, res) => {
                 req.flash('msg',"You are not authorized to view that user's gallery.")
                 res.redirect('/gallery')
             }
-        }catch{
+        }catch {
             req.flash('msg',"Invalid Gallery User")
             res.redirect('/gallery')
         }
@@ -107,7 +103,7 @@ router.get('/gallery/:user_id?',ensureAuthenticated, async (req, res) => {
 
 })
 
-router.get('/acceptInvite',ensureAuthenticated,async (req,res) => {
+router.get('/acceptInvite',forceAuth,async (req,res) => {
     
     try{
         if(req.user._id == req.query.user_id){
@@ -136,16 +132,16 @@ router.get('/acceptInvite',ensureAuthenticated,async (req,res) => {
     
 })
 
-router.post('/friends/unfriend/:user_id',ensureAuthenticated,async (req,res) => {
+router.post('/friends/unfriend/:user_id',forceAuth,async (req,res) => {
     if(await userModel.isFriend(req.user._id,req.params.user_id)){
-        let result = await userModel.removeFriend(req.user._id,req.params.user_id)
-        res.send(result)
+        let removeFriend = await userModel.removeFriend(req.user._id,req.params.user_id)
+        res.send(removeFriend)
     }else{
         res.send({success:false,msg:"You are not friends with that user"})
     }
 })
 
-router.post('/gallery/inviteFriend',ensureAuthenticated,async (req,res) => {
+router.post('/gallery/inviteFriend',forceAuth,async (req,res) => {
     const sendEmail = require('../config/mailer');
     let body = `You have been invited to view ${req.user.display_name}'s Photo Gallery!\n
     Follow the link to accept the invitation: ${req.protocol}://${process.env.SERVER}/acceptInvite?user_id=${req.user._id}`;
@@ -160,36 +156,85 @@ router.post('/gallery/inviteFriend',ensureAuthenticated,async (req,res) => {
     
 })
 
+router.post('/gallery/like',forceAuth, async (req, res) => {
+    let image_id = mongodb.ObjectID(req.body.image_id);
+    let image_user = await User.findOne().where('user_photos._id',image_id).lean().exec()
+    let like_status = await User.findOne({photo_likes: {$elemMatch: {user:req.user._id.toString(),photo:image_id.toString(),}}})
+    if(!like_status){
+        let add_like = await User.findByIdAndUpdate(mongodb.ObjectID(image_user._id),{ $push: {photo_likes: {user: req.user._id.toString(),photo: image_id.toString()}} },{ //options
+            returnNewDocument: true,
+            new: true,
+            strict: false
+          });
+        if(add_like){
+            res.send({success:true,liked:true})
+        }else{
+            res.send({success:false})
+        }
+    }else{
+        let remove_like = await User.findByIdAndUpdate(image_user._id,{ $pull: {photo_likes: {user: req.user._id.toString(),photo: image_id.toString()}} },{ //options
+            returnNewDocument: true,
+            new: true,
+            strict: false
+          });
 
-router.post('/gallery/delete',ensureAuthenticated,async (req,res) => {
-    let path = req.body.path
-    let result = await User.findByIdAndUpdate(req.user._id, {$pull: {user_photos: {path: path}}},{ //options
+        if(remove_like){
+            res.send({success:true,unliked:true})
+        }else{
+            res.send({success:false})
+        }
+    }
+    
+    
+
+})
+
+
+router.post('/gallery/delete',forceAuth,async (req,res) => {
+    let path = req.body.path;
+    let id = req.body.image_id;
+    let result = await User.findByIdAndUpdate(req.user._id, {$pull: {user_photos: {_id: mongodb.ObjectID(id)}}},{ //options
         returnNewDocument: true,
         new: true,
-        strict: false,
-        rawResult: true
+        strict: false
       });
-    if(result.lastErrorObject.updatedExisting){
+    if(result){
         res.send({success: true});
-        res.user = result.value;
-        result = await fs.promises.unlink(path);
+        res.user = result;
+
+        let delete_likes = await User.findByIdAndUpdate(req.user._id,{ $pull: {photo_likes: {photo: id.toString()}} },{ //options
+            returnNewDocument: true,
+            new: true,
+            strict: false
+          });
+
+        try{
+            result = await fs.promises.unlink(path);
+        }catch(err){
+            console.log(err);
+        }
     }else{
         res.send({success:false});
     }
     
 })
 
-router.post('/gallery/upload',ensureAuthenticated, async (req, res) => {
-    let file = req.files.photo_file    
-    if(file && req.user){
+router.post('/gallery/upload',forceAuth, async (req, res) => {
+    let files = Array.isArray(req.files.photo_file) ? req.files.photo_file : [req.files.photo_file]
+    
+    if(files && req.user){
+        //Add UUID to each file object
+        files.forEach((element,index) => {
+            files[index] ={_id:new mongodb.ObjectID, ...element};
+        });
         if(!req.user.user_photos){
-            req.user = await User.findByIdAndUpdate(req.user._id, {$set: {user_photos: [file]}},{ //options
+            await User.findByIdAndUpdate(req.user._id, {$set: {user_photos: files}},{ //options
                 returnNewDocument: true,
                 new: true,
                 strict: false
               });
         }else{
-            req.user = await User.findByIdAndUpdate(req.user._id, {$push: {user_photos: file}},{ //options
+            await User.findByIdAndUpdate(req.user._id, {$push: {user_photos: files}},{ //options
                 returnNewDocument: true,
                 new: true,
                 strict: false
@@ -200,5 +245,10 @@ router.post('/gallery/upload',ensureAuthenticated, async (req, res) => {
     req.flash('msg','Image(s) uploaded successfully!');
     res.redirect('/gallery')
 })
+
+router.get('*', function(req, res){
+    res.status(404).render('404',{
+        layout: ''});
+  });
 
 module.exports = router
