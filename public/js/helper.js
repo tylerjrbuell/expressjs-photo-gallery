@@ -134,7 +134,8 @@ document.querySelectorAll('.photo_card').forEach(function(photo_card){
                 let heart_element = Array.from(document.getElementsByClassName('fa-heart-o')).filter(function(e){
                     return e.getAttribute('image_id') == photo_card.id;
                 })[0];
-                if(heart_element.style.display == 'none'){
+                console.log(heart_element.style.display);
+                if(heart_element.style.display != 'block' && heart_element.style.display != '' ){
                     likePhoto(heart_element,element)
                 }
                }); 
@@ -144,7 +145,8 @@ document.querySelectorAll('.photo_card').forEach(function(photo_card){
                 let heart_element = Array.from(document.getElementsByClassName('fa-heart')).filter(function(e){
                     return e.getAttribute('image_id') == photo_card.id;
                 })[0];
-                if(heart_element.style.display == 'none'){
+                console.log(heart_element.style.display);
+                if(heart_element.style.display != 'block'){
                     likePhoto(heart_element,element)
                 }
                 
