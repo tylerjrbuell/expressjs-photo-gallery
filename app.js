@@ -107,7 +107,10 @@ app.engine(".hbs", exphbs({
         return options.fn(this);
       }
       return options.inverse(this);
-    }
+    },
+    jsonify: function(varName, varValue, options) {
+      return JSON.stringify(varValue);
+    },
   },
   defaultLayout: "main",
   extname: ".hbs",

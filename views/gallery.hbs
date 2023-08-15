@@ -43,9 +43,9 @@
 </div>
 
 <script>
-    var photos = {{{convert user_photos}}}
-    var user = {{{convert current_user}}}
-    var likes = {{{convert photo_likes}}}
+    var photos = {{{jsonify user_photos}}}
+    var user = {{{jsonify current_user}}}
+    var likes = {{{jsonify photo_likes}}}
     for(photo of photos){
         var like_count = document.getElementById(`like_count_${photo._id}`);
         like_count.innerHTML = likes.filter(function(e){
