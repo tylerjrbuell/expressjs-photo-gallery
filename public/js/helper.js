@@ -158,14 +158,15 @@ document.querySelectorAll('.photo_card').forEach(function(photo_card){
 // Upload image files
 if(document.getElementById('photo_file')){
         document.getElementById('photo_file').onchange = () => {        
-
-        var files = document.getElementById('photo_file').files;
-        if(files.length > 0){
-            // document.getElementById('file_name').innerHTML = files[0].name
-            document.getElementById('file_upload_form').submit();
-        }else{
-            toastWarning('No file selected!',2000);
-        }
+            document.getElementsByClassName('spanner')[0].classList.add('show');
+            document.getElementsByClassName('loader')[0].classList.add('show');
+            var files = document.getElementById('photo_file').files;
+            if(files.length > 0){
+                // document.getElementById('file_name').innerHTML = files[0].name
+                document.getElementById('file_upload_form').submit();
+            }else{
+                toastWarning('No file selected!',2000);
+            }
     }
 }
 

@@ -108,7 +108,7 @@ app.engine(".hbs", exphbs({
       }
       return options.inverse(this);
     },
-    jsonify: function(varName, varValue, options) {
+    jsonify: function(varValue) {
       return JSON.stringify(varValue);
     },
   },

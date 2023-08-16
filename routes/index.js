@@ -6,6 +6,11 @@ const mongodb = require('mongodb');
 const userModel = require('../models/UserModel')
 let forceAuth = require('./auth').ensureAuthenticated
 fs = require('fs')
+const resolve = require('path').resolve
+const normalize = require('path').normalize
+const { getImageCaption } = require('../services/image_captioner');
+const { getImageTags } = require('../services/image_tagger');
+
 
 //connect-multiparty will help to access uploaded files on the req.files object
 const multipartMiddleware = multipart({ maxFieldsSize: (20 * 1024 * 1024), uploadDir: process.env.PHOTO_UPLOAD_DIR});
@@ -224,9 +229,15 @@ router.post('/gallery/upload',forceAuth, async (req, res) => {
     
     if(files && req.user){
         //Add UUID to each file object
-        files.forEach((element,index) => {
-            files[index] ={_id:new mongodb.ObjectID, ...element};
-        });
+        for(let [index,file] of files.entries()) {
+            try{
+                file.caption = await getImageCaption(normalize(resolve(file.path)));
+                file.tags = await getImageTags(normalize(resolve(file.path)));
+                files[index] ={_id:new mongodb.ObjectID, ...file};
+            }catch(err){
+                console.log(err);
+            }
+        }
         if(!req.user.user_photos){
             await User.findByIdAndUpdate(req.user._id, {$set: {user_photos: files}},{ //options
                 returnNewDocument: true,
