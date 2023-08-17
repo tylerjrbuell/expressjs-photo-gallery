@@ -117,6 +117,7 @@ app.engine(".hbs", exphbs({
   // handlebars: allowInsecurePrototypeAccess(handlebars)
 }));
 app.set("view engine", ".hbs");
+app.set('views', __dirname + '\\views');
 
 //load passport middleware
 app.use(passport.initialize());
