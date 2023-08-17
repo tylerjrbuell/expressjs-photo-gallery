@@ -23,6 +23,9 @@ dotenv.config({
   path: "./config/.env"
 });
 
+//Handle vercel url
+process.env.SERVER = process.env.SERVER ? process.env.SERVER :  process.env.VERCEL_URL
+
 //load passport to auth
 const passport_config = require("./config/passport");
 passport_config(passport);
