@@ -14,8 +14,8 @@ const https = require('https')
 let fs = require('fs')
 
 // SSL cert
-const key = fs.readFileSync("./security/test-app.10.204.221.131.nip.io-key.pem", "utf-8");
-const cert = fs.readFileSync("./security/test-app.10.204.221.131.nip.io.pem", "utf-8");
+// const key = fs.readFileSync("./security/test-app.127.0.0.1.nip.io-key.pem", "utf-8");
+// const cert = fs.readFileSync("./security/test-app.127.0.0.1.nip.io.pem", "utf-8");
 
 
 //Load Config
@@ -126,14 +126,14 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, "public")));
 app.use('/uploads/photos',express.static(process.env.PHOTO_UPLOAD_DIR));
 
-// app.listen(PORT, () => {
-//   console.log("Server started on port: " + PORT);
-// });
+app.listen(PORT, () => {
+  console.log("Server started on port: " + PORT);
+});
 
 
-https.createServer({ key, cert }, app).listen(PORT,SERVER,() => {
-    console.log("Server started on: https://" + SERVER + ":" + PORT);
-  });
+// https.createServer({ key, cert }, app).listen(PORT,SERVER,() => {
+//     console.log("Server started on: https://" + SERVER + ":" + PORT);
+//   });
 
 //auth Level Route
 app.use("/auth", require("./routes/auth").router);
