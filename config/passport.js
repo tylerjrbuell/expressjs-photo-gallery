@@ -7,7 +7,7 @@ passport = function (passport) {
     new GoogleStategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: `https://${process.env.SERVER}/auth/google/callback`,
+        callbackURL: `https://${process.env.SERVER || process.env.VERCEL_URL}/auth/google/callback`,
       },
       async (accessToken, refreshToken, profile, done) => {
         const newUser = {
